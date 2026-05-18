@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Courses - NetForge Academy{% endblock %}
+
+{% block header %}
+<h2 class="fw-bold">
+    <i class="bi bi-journal-bookmark me-2"></i> Browse Courses
+</h2>
+<p class="text-secondary">
+    Explore our comprehensive network automation training courses.
+</p>
+{% endblock %}
+
+{% block content %}
+
+<!-- FILTERS AND SEARCH -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3">
+            <div class="col-md-6">
+                <input 
+                    type="text" 
+                    class="form-control" 
+                    name="search" 
+                    placeholder="Search courses..."
+                    value="{{ search_query }}"
+                >
+            </div>
+            
+            <div class="col-md-4">
+                <select class="form-select" name="level">
+                    <option value="">All Levels</option>
+                    {% for level_val, level_label in levels %}
+                        <option value="{{ level_val }}" {% if selected_level == level_val %}selected{% endif %}>
+                            {{ level_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-info w-100">
+                    <i class="bi bi-search me-2"></i> Filter
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- COURSES GRID -->
+<div class="row g-4">
+    {% if courses %}
+        {% for course in courses %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card h-100 d-flex flex-column">
+                    <!-- Header with level badge -->
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <span class="fw-bold">{{ course.title }}</span>
+                        <span class="badge bg-info">
+                            {% if course.level == 'beginner' %}
+                                Beginner
+                            {% elif course.level == 'intermediate' %}
+                                Intermediate
+                            {% elif course.level == 'advanced' %}
+                                Advanced
+                            {% elif course.level == 'isp' %}
+                                ISP Level
+                            {% endif %}
+                        </span>
+                    </div>
+                    
+                    <!-- Body -->
+                    <div class="card-body flex-grow-1">
+                        <p class="text-secondary mb-3">{{ course.description|truncatewords:20 }}</p>
+                        
+                        <div class="mb-3">
+                            <small class="text-secondary d-block mb-1">
+                                <i class="bi bi-clock"></i> Duration
+                            </small>
+                            <strong>{{ course.duration_hours }} hours</strong>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <small class="text-secondary d-block mb-1">
+                                <i class="bi bi-diagram-3"></i> Labs
+                            </small>
+                            <strong>{{ course.labs.count }} lab{{ course.labs.count|pluralize }}</strong>
+                        </div>
+                        
+                        {% if course.price > 0 %}
+                            <div>
+                                <small class="text-secondary d-block mb-1">
+                                    <i class="bi bi-tag"></i> Price
+                                </small>
+                                <strong class="text-warning">KSh {{ course.price }}</strong>
+                            </div>
+                        {% else %}
+                            <div>
+                                <span class="badge badge-isp">Free</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Footer with action button -->
+                    <div class="card-footer bg-transparent border-top">
+                        {% if user.is_authenticated %}
+                            {% if course.id in user_enrollments %}
+                                <a href="{% url 'courses:detail' course.id %}" class="btn btn-success w-100">
+                                    <i class="bi bi-check-circle me-2"></i> Enrolled
+                                </a>
+                            {% else %}
+                                <a href="{% url 'courses:detail' course.id %}" class="btn btn-outline-info w-100">
+                                    <i class="bi bi-eye me-2"></i> View Course
+                                </a>
+                            {% endif %}
+                        {% else %}
+                            <a href="{% url 'accounts:login' %}" class="btn btn-outline-info w-100">
+                                <i class="bi bi-box-arrow-in-right me-2"></i> Login to Enroll
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                <i class="bi bi-info-circle me-2"></i>
+                <strong>No courses found.</strong> Try adjusting your filters or search query.
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}
