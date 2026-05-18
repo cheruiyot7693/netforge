@@ -70,6 +70,26 @@ def export_vrnetlab(request, lab_id):
     json_content = build_vrnetlab_json(lab)
     return HttpResponse(json_content, content_type='application/json')
 
+
+def download_openvpn_server_config(request, lab_id):
+    lab = get_object_or_404(Lab, id=lab_id)
+    if lab.topology_type != 'vpn':
+        return HttpResponse('OpenVPN config is available only for VPN labs.', status=404)
+    config = build_openvpn_server_config(lab)
+    response = HttpResponse(config, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename="lab-{lab_id}-openvpn-server.conf"'
+    return response
+
+
+def download_openvpn_client_config(request, lab_id):
+    lab = get_object_or_404(Lab, id=lab_id)
+    if lab.topology_type != 'vpn':
+        return HttpResponse('OpenVPN config is available only for VPN labs.', status=404)
+    config = build_openvpn_client_config(lab)
+    response = HttpResponse(config, content_type='text/plain')
+    response['Content-Disposition'] = f'attachment; filename="lab-{lab_id}-openvpn-client.ovpn"'
+    return response
+
 def session_list(request):
     """Display list of lab sessions"""
     return render(request, 'labs/sessions.html')

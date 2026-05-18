@@ -84,6 +84,14 @@
                     </div>
                 </div>
             </div>
+            <div class="d-flex gap-2 mb-4">
+                <a href="{% url 'labs:download_openvpn_server_config' lab.id %}" class="btn btn-success btn-sm">
+                    <i class="bi bi-download me-2"></i> Download Server Config
+                </a>
+                <a href="{% url 'labs:download_openvpn_client_config' lab.id %}" class="btn btn-success btn-sm">
+                    <i class="bi bi-download me-2"></i> Download Client Config
+                </a>
+            </div>
         {% endif %}
     </div>
     

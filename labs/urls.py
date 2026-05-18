@@ -8,6 +8,8 @@ urlpatterns = [
     path('<int:lab_id>/start/', views.lab_start, name='start'),
     path('<int:lab_id>/export/containerlab/', views.export_containerlab, name='export_containerlab'),
     path('<int:lab_id>/export/vrnetlab/', views.export_vrnetlab, name='export_vrnetlab'),
+    path('<int:lab_id>/download/openvpn/server/', views.download_openvpn_server_config, name='download_openvpn_server_config'),
+    path('<int:lab_id>/download/openvpn/client/', views.download_openvpn_client_config, name='download_openvpn_client_config'),
     
     # Lab Sessions
     path('sessions/', views.session_list, name='session_list'),
