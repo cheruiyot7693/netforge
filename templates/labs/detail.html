@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ lab.title }} - NetForge Lab{% endblock %}
+
+{% block header %}
+<h2 class="fw-bold">
+    <i class="bi bi-diagram-3 me-2"></i> {{ lab.title }}
+</h2>
+<p class="text-secondary">
+    {{ lab.description }}
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-hdd-network me-2"></i> Lab Overview
+            </div>
+            <div class="card-body">
+                <div class="mb-3 d-flex gap-2 flex-wrap">
+                    <a href="{% url 'labs:export_containerlab' lab.id %}" class="btn btn-outline-info btn-sm">
+                        <i class="bi bi-file-earmark-arrow-down me-2"></i> Export Containerlab
+                    </a>
+                    <a href="{% url 'labs:export_vrnetlab' lab.id %}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-filetype-json me-2"></i> Export VRNetLab
+                    </a>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <small class="text-secondary">Course</small>
+                        <p class="fw-bold">{{ lab.course.title }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-secondary">Topology</small>
+                        <p class="fw-bold">{{ lab.topology_type|upper }}</p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <small class="text-secondary">Difficulty</small>
+                        <p class="fw-bold">{{ lab.get_difficulty_display }}</p>
+                    </div>
+                </div>
+                <p class="text-secondary">{{ lab.description }}</p>
+            </div>
+        </div>
+        
+        {% if vpn_lab %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-shield-lock me-2"></i> VPN Lab Access
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary mb-3">
+                        This lab is designed to build a VPN tunnel that enables direct SSH access to the virtual switches and lab servers.
+                    </p>
+                    <div class="list-group list-group-flush">
+                        {% for endpoint in ssh_endpoints %}
+                            <div class="list-group-item bg-transparent border-secondary mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h6 class="fw-bold mb-0">{{ endpoint.name }}</h6>
+                                    <span class="badge bg-success">SSH</span>
+                                </div>
+                                <p class="text-secondary mb-1">{{ endpoint.description }}</p>
+                                <code class="d-block">ssh {{ endpoint.user }}@{{ endpoint.host }}</code>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-file-earmark-text me-2"></i> OpenVPN Config
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary mb-2">Download or copy the server and client configuration to enable VPN access to the lab infrastructure.</p>
+                    <div class="mb-3">
+                        <strong>Server config</strong>
+                        <pre class="p-3 bg-dark text-light rounded">{{ openvpn_server_config }}</pre>
+                    </div>
+                    <div>
+                        <strong>Client config</strong>
+                        <pre class="p-3 bg-dark text-light rounded">{{ openvpn_client_config }}</pre>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card mb-4 sticky-top" style="top: 20px;">
+            <div class="card-header">
+                <i class="bi bi-play-btn me-2"></i> Start Lab
+            </div>
+            <div class="card-body">
+                <p class="text-secondary mb-3">
+                    Follow the lab start guide to initialize the virtual topology and verify connectivity.
+                </p>
+                <a href="{% url 'labs:start' lab.id %}" class="btn btn-info w-100 mb-2">
+                    <i class="bi bi-rocket me-2"></i> Launch Lab
+                </a>
+                <a href="{% url 'labs:list' %}" class="btn btn-outline-secondary w-100">
+                    <i class="bi bi-arrow-left me-2"></i> Back to Labs
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

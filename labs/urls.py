@@ -6,6 +6,8 @@ urlpatterns = [
     path('', views.lab_list, name='list'),
     path('<int:lab_id>/', views.lab_detail, name='detail'),
     path('<int:lab_id>/start/', views.lab_start, name='start'),
+    path('<int:lab_id>/export/containerlab/', views.export_containerlab, name='export_containerlab'),
+    path('<int:lab_id>/export/vrnetlab/', views.export_vrnetlab, name='export_vrnetlab'),
     
     # Lab Sessions
     path('sessions/', views.session_list, name='session_list'),

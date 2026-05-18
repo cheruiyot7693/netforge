@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% block title %}Start {{ lab.title }} - NetForge Lab{% endblock %}
+
+{% block header %}
+<h2 class="fw-bold">
+    <i class="bi bi-rocket me-2"></i> Start {{ lab.title }}
+</h2>
+<p class="text-secondary">
+    The lab is ready. Follow the steps below to bring up the topology and verify SSH over VPN.
+</p>
+{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card mb-4">
+            <div class="card-header">
+                <i class="bi bi-tools me-2"></i> Lab Startup Guide
+            </div>
+            <div class="card-body">
+                <ol class="list-group list-group-numbered mb-0">
+                    <li class="list-group-item bg-transparent border-secondary mb-3">
+                        <strong>Provision the topology.</strong>
+                        <p class="text-secondary mb-0">Create the virtual routers, switches, and server instances inside the lab environment.</p>
+                    </li>
+                    <li class="list-group-item bg-transparent border-secondary mb-3">
+                        <strong>Configure the VPN tunnel.</strong>
+                        <p class="text-secondary mb-0">Use the VPN configuration below to connect the site-to-site tunnel between the edge router and the core network.</p>
+                    </li>
+                    <li class="list-group-item bg-transparent border-secondary mb-3">
+                        <strong>Verify IP connectivity.</strong>
+                        <p class="text-secondary mb-0">Ping the server and switch addresses across the tunnel.</p>
+                    </li>
+                    <li class="list-group-item bg-transparent border-secondary mb-3">
+                        <strong>SSH to devices.</strong>
+                        <p class="text-secondary mb-0">SSH directly to the switches and servers through the VPN.</p>
+                    </li>
+                </ol>
+            </div>
+        </div>
+        
+        {% if vpn_lab %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-shield-lock me-2"></i> VPN Configuration Snippet
+                </div>
+                <div class="card-body">
+                    <pre class="p-3 bg-dark text-light rounded"># Example strongSwan IPsec configuration
+conn netforge-vpn
+    left=%defaultroute
+    leftsubnet=10.0.5.0/24
+    right=203.0.113.10
+    rightsubnet=10.0.6.0/24
+    authby=psk
+    keyexchange=ikev2
+    ike=aes256-sha256-modp2048
+    esp=aes256-sha256
+    auto=add
+</pre>
+                    <p class="text-secondary mb-0">Replace the peer address with your lab edge router IP and apply this config on the VPN peer.</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <i class="bi bi-terminal me-2"></i> SSH Access Commands
+                </div>
+                <div class="card-body">
+                    <p class="text-secondary mb-3">After the VPN is established, connect using these commands.</p>
+                    <pre class="p-3 bg-dark text-light rounded">ssh admin@10.0.5.11
+ssh network@10.0.5.12
+ssh ubuntu@10.0.5.21</pre>
+                    <p class="text-secondary mb-0">If the session fails, ensure the VPN tunnel is up and the lab services are running.</p>
+                </div>
+            </div>
+        {% else %}
+            <div class="card">
+                <div class="card-body">
+                    <p class="text-secondary mb-0">This lab does not include a VPN topology. You can still use the lab details page to understand the environment and configuration steps.</p>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-lg-4">
+        <div class="card sticky-top" style="top: 20px;">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i> Lab Information
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Title:</strong> {{ lab.title }}</p>
+                <p class="mb-2"><strong>Course:</strong> {{ lab.course.title }}</p>
+                <p class="mb-2"><strong>Difficulty:</strong> {{ lab.get_difficulty_display }}</p>
+                <p class="mb-2"><strong>Topology:</strong> {{ lab.topology_type|upper }}</p>
+                <a href="{% url 'labs:detail' lab.id %}" class="btn btn-outline-secondary w-100">
+                    Back to Lab Details
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
