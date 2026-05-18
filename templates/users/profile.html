@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Profile - NetForge Academy{% endblock %}
+
+{% block header %}
+<h2 class="fw-bold">
+    <i class="bi bi-person-circle me-2"></i> User Profile
+</h2>
+<p class="text-secondary">
+    View and manage your profile information.
+</p>
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-info-circle me-2"></i>Profile Information
+            </div>
+            
+            <div class="card-body">
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Username</label>
+                    <p class="fw-bold">{{ user.username }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Email</label>
+                    <p class="fw-bold">{{ user.email }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Full Name</label>
+                    <p class="fw-bold">{{ user.first_name }} {{ user.last_name }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Bio</label>
+                    <p class="fw-bold">{{ profile.bio|default:"No bio added yet" }}</p>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label text-secondary">Member Since</label>
+                    <p class="fw-bold">{{ user.date_joined|date:"F d, Y" }}</p>
+                </div>
+                
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-warning">
+                    <i class="bi bi-pencil me-2"></i> Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <i class="bi bi-lightning-fill me-2"></i>Quick Actions
+            </div>
+            
+            <div class="card-body">
+                <a href="/courses/" class="btn btn-outline-info w-100 mb-2">
+                    <i class="bi bi-journal-bookmark me-2"></i> Browse Courses
+                </a>
+                
+                <a href="/academy/" class="btn btn-outline-info w-100 mb-2">
+                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                </a>
+                
+                <a href="{% url 'accounts:logout' %}" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-box-arrow-left me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
