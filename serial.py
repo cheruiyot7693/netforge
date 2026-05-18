@@ -26,7 +26,7 @@ Install:
     pip install openai
 
 Environment:
-    export OPENAI_API_KEY="YOUR-API-KEY-HERE"
+    export OPENAI_API_KEY="your-api-key-here"
 
 Optional:
     export OPENAI_BASE_URL="https://api.openai.com/v1"
